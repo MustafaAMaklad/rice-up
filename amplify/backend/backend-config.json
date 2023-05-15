@@ -1,0 +1,22 @@
+{
+  "api": {
+    "ReadingGraphQLAPI": {
+      "dependsOn": [],
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [],
+          "defaultAuthentication": {
+            "apiKeyConfig": {
+              "apiKeyExpirationDate": "2024-05-05T01:03:21.425Z",
+              "apiKeyExpirationDays": 365,
+              "description": "API__KEY"
+            },
+            "authenticationType": "API_KEY"
+          }
+        }
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "AppSync"
+    }
+  }
+}

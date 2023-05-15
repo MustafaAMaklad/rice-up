@@ -1,0 +1,11 @@
+
+input AMPLIFY { globalAuthRule: AuthRule = { allow: public } } # FOR TESTING ONLY!
+
+type Reading @model(subscriptions: { level: public }) @searchable @auth(rules: [{ allow: public }]){
+  device_id: ID! @primaryKey(sortKeyFields: ["timestamp"])
+  timestamp: Int!
+  temperature: Float
+  moisture: Float
+}
+
+

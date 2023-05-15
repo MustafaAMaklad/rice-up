@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-riceup-dev-25855-authRole",
+      "UnauthRoleArn": "arn:aws:iam::404548260653:role/amplify-riceup-dev-25855-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::404548260653:role/amplify-riceup-dev-25855-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-riceup-dev-25855-deployment",
+      "UnauthRoleName": "amplify-riceup-dev-25855-unauthRole",
+      "StackName": "amplify-riceup-dev-25855",
+      "StackId": "arn:aws:cloudformation:us-east-1:404548260653:stack/amplify-riceup-dev-25855/308052f0-eba9-11ed-97dd-0a177fb9670f",
+      "AmplifyAppId": "d9pzjogkcc6zv"
+    },
+    "categories": {
+      "api": {
+        "ReadingGraphQLAPI": {}
+      }
+    }
+  }
+}
