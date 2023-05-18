@@ -89,7 +89,7 @@ class _ClassificationScreenState extends State<ClassificationScreen> {
           color: Colors.amberAccent,
         ),
         backgroundColor: primaryLightColor,
-        elevation: 0.0,
+        elevation: mainElevation,
         title: const Text(
           'Classification Result',
           style: TextStyle(

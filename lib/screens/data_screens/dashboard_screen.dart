@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rice_up/screens/monitor_screen.dart';
+import 'package:rice_up/screens/data_screens/monitor_screen.dart';
 import 'package:rice_up/widgets/palatte.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -28,7 +28,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const Text(
               'Click to Monitor Your Crop in Real-Time',
               style: TextStyle(
-                fontSize: 15,
+                fontSize: 20,
               ),
             ),
             const SizedBox(

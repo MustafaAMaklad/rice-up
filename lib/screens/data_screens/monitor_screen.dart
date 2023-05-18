@@ -1,23 +1,14 @@
-import 'dart:ffi';
+import 'package:flutter/material.dart'; //  flutter essentials
+import 'package:rice_up/widgets/palatte.dart'; // custom widget
+import 'package:syncfusion_flutter_charts/charts.dart'; // charts and visualization
 
-import 'package:flutter/material.dart';
-import 'package:rice_up/widgets/palatte.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'dart:async';
-import 'dart:math' as math;
+import 'package:connectivity_plus/connectivity_plus.dart'; // for connectivity check
+import 'dart:async'; // for stream subscription
+import "package:amplify_flutter/amplify_flutter.dart"; // for amplify backend
+import '../../models/Reading.dart'; // for GraphQL models
+import 'package:amplify_api/amplify_api.dart'; // for appsync graphql api
 
-import "dart:async";
-import "dart:convert";
-
-// import "package:amazon_cognito_identity_dart_2/cognito.dart";
-import "package:amplify_flutter/amplify_flutter.dart";
-
-import "../models/Reading.dart";
-
-import 'package:amplify_api/amplify_api.dart';
-
-import 'package:graphql/client.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
+import "dart:convert"; // for response data parsing
 
 class MonitorScreen extends StatefulWidget {
   const MonitorScreen({Key? key}) : super(key: key);
@@ -33,12 +24,11 @@ class _MonitorScreenState extends State<MonitorScreen> {
   late ChartSeriesController _chartSeriesControllerTemp;
   late ChartSeriesController _chartSeriesControllerMois;
 
-  int time = 19; // Start X-axis (time) for new subscription at 20
-  int limit = 20; // limit of first query
+  int time = 23; // Start X-axis (time) for new subscription at 19
+  int limit = 24; // limit of first query
   String deviceId = "arn:aws:iot:us-east-1:404548260653:thing/ESP32_Farm1";
 
   // Intialize data structrues for items to be displayed
-  dynamic lastItems = [];
   List<int> lastTemperature = [];
   List<int> lastMoisture = [];
   List<Reading> readings = [];
@@ -56,20 +46,14 @@ class _MonitorScreenState extends State<MonitorScreen> {
   void initState() {
     super.initState();
     // Checks internet connection to establish subscription and query data
-    checkInternetConnection();
+    checkInternetConnection(showSnackBarMessage);
   }
 
-  void checkInternetConnection() async {
+  void checkInternetConnection(void Function(String) showMessage) async {
     var connectivityResult = await Connectivity().checkConnectivity();
     if (connectivityResult == ConnectivityResult.none) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'No internet connection. Try connecting to the internet again to be able to view data.',
-          ),
-          duration: Duration(seconds: 5),
-        ),
-      );
+      showMessage(
+          'No internet connection. Try connecting to the internet again to be able to view data.');
     } else {
       subscribe(); // Establish API subscription
       init(); // Get last Items recorded previously
@@ -79,29 +63,34 @@ class _MonitorScreenState extends State<MonitorScreen> {
   Future<void> init() async {
     // Get last Items recorded previously
     List<List<int>> lastItems = await queryListItems();
-
-    List<int> lastTemperature = lastItems[0];
-    List<int> lastMoisture = lastItems[1];
+    lastTemperature = lastItems[0];
+    lastMoisture = lastItems[1];
     setState(() {
       temperatureChartData = getTempChartData(
           lastTemperature); // Get last previous 10 temperature data
-      moistureChartData =
-          getMoisChartData(lastMoisture); // Get last previous 10 moisture data
+      moistureChartData = getMoisChartData(lastMoisture);
     });
+  }
+
+  // display error message when there is no internet connection
+  void showSnackBarMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 5),
+      ),
+    );
   }
 
   // GraphQl API subscription
   void subscribe() {
     final subscriptionRequest = ModelSubscriptions.onCreate(Reading.classType);
-    debugPrint("here is an error1");
     final Stream<GraphQLResponse<Reading>> operation = Amplify.API.subscribe(
       subscriptionRequest,
       onEstablished: () => safePrint('Subscription established'),
     );
-    debugPrint("here is an error2");
     subscription = operation.listen(
       (event) {
-        debugPrint("here is an error3");
         setState(() {
           readings.add(event.data!);
           int temperature = event.data!.temperature!.toInt();
@@ -122,10 +111,10 @@ class _MonitorScreenState extends State<MonitorScreen> {
   }
 
   void updateData(int temperature, int moisture) {
-    if (temperatureChartData.length >= 19) {
+    if (temperatureChartData.length >= limit - 1) {
       temperatureChartData.removeAt(0);
     }
-    if (moistureChartData.length >= 19) {
+    if (moistureChartData.length >= limit - 1) {
       moistureChartData.removeAt(0);
     }
     time++;
@@ -138,13 +127,13 @@ class _MonitorScreenState extends State<MonitorScreen> {
         addedDataIndex: moistureChartData.length - 1, removedDataIndex: 0);
   }
 
-  // Query last 10 items to plot for the user
+  // Query last limit items to plot for the user
   // when user opens the chart
   Future<List<List<int>>> queryListItems() async {
     String document = '''
         query MyQuery {
-          listReadings(device_id: "arn:aws:iot:us-east-1:404548260653:thing/ESP32_Farm1",
-           limit: 20, sortDirection: DESC) {
+          listReadings(device_id: "$deviceId",
+           limit: $limit, sortDirection: DESC) {
             items {
               moisture
               temperature
@@ -157,12 +146,7 @@ class _MonitorScreenState extends State<MonitorScreen> {
       final response = await Amplify.API.query(request: request).response;
 
       dynamic data = json.decode(response.data)["listReadings"]["items"];
-      // data = DateTime.fromMillisecondsSinceEpoch(data.toInt());
-      // String formatedTime =
-      //     '${data.year}/${data.month}/${data.day} ${data.hour}:${data.minute}';
-      // safePrint("reading:  $data");
-      // List<dynamic> values = data;
-      // dynamic value = data[0]['moisture'].toInt();
+
       List<int> temp = [];
       List<int> mois = [];
       for (int i = 0; i < limit; i++) {
@@ -171,7 +155,6 @@ class _MonitorScreenState extends State<MonitorScreen> {
       }
       safePrint("temp:  $temp");
       safePrint("mois:  $mois");
-      // safePrint("date:  $formatedTime");
       safePrint((temp).runtimeType);
       if (data == null) {
         safePrint('errors: ${response.errors}');
@@ -182,18 +165,6 @@ class _MonitorScreenState extends State<MonitorScreen> {
       return [];
     }
   }
-
-  // void updateDataSource(Timer timer) {
-  //   if (chartData.length >= 19) {
-  //     chartData.removeAt(0);
-  //   }
-  //   // time++;
-  //   // chartData.add(LiveData(time, (math.Random().nextInt(60) + 30)));
-  //   // _chartSeriesControllerTemp.updateDataSource(
-  //   //     addedDataIndex: chartData.length - 1, removedDataIndex: 0);
-  //   // _chartSeriesControllerMois.updateDataSource(
-  //   //     addedDataIndex: chartData.length - 1, removedDataIndex: 0);
-  // }
 
   List<LiveData> getTempChartData(List<int> lastTemperature) {
     List<LiveData> tempChartData = [];
@@ -225,50 +196,34 @@ class _MonitorScreenState extends State<MonitorScreen> {
       appBar: AppBar(
         centerTitle: true,
         leading: const BackButton(
-          color: Colors.amberAccent,
+          color: secondaryColor,
         ),
         backgroundColor: primaryLightColor,
-        elevation: 0.0,
+        elevation: mainElevation,
         title: const Text(
           'Sensor Measurements',
           style: TextStyle(
-            color: Colors.amber,
+            color: primaryColor,
           ),
         ),
       ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            onTap: () => chartOnPressed(),
-            child: Column(
-              children: [
-                Padding(
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: chartOnPressed,
+                child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20.0),
                   // Temperature chart
                   child: SfCartesianChart(
                     title: ChartTitle(
                       text: 'Temperature in Field',
                       alignment: ChartAlignment.center,
-                      // backgroundColor: Colors.white,
                       borderColor: Colors.transparent,
                       borderWidth: 0,
                     ),
-                    // annotations: <CartesianChartAnnotation>[
-                    //   CartesianChartAnnotation(
-                    //     widget: Container(
-                    //       height: 1,
-                    //       width: 250,
-                    //       color: Colors.red,
-                    //     ),
-                    //     coordinateUnit: CoordinateUnit.logicalPixel,
-                    //     region: AnnotationRegion.chart,
-                    //     verticalAlignment: ChartAlignment.center,
-                    //     horizontalAlignment: ChartAlignment.center,
-                    //     x: 0,
-                    //     y: 25,
-                    //   ),
-                    // ],
                     series: <LineSeries<LiveData, int>>[
                       LineSeries<LiveData, int>(
                         onRendererCreated: (ChartSeriesController controller) {
@@ -283,9 +238,9 @@ class _MonitorScreenState extends State<MonitorScreen> {
                     primaryXAxis: NumericAxis(
                       majorGridLines: const MajorGridLines(width: 0),
                       edgeLabelPlacement: EdgeLabelPlacement.shift,
-                      interval: 3,
+                      interval: 2,
                       title: AxisTitle(
-                        text: 'Time (seconds)',
+                        text: 'Time (minutes)',
                       ),
                     ),
                     primaryYAxis: NumericAxis(
@@ -297,32 +252,19 @@ class _MonitorScreenState extends State<MonitorScreen> {
                     ),
                   ),
                 ),
-                Padding(
+              ),
+              GestureDetector(
+                onTap: chartOnPressed,
+                child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 20.0),
                   // Moisture chart
                   child: SfCartesianChart(
                     title: ChartTitle(
                       text: 'Moisture in Field',
                       alignment: ChartAlignment.center,
-                      // backgroundColor: Colors.white,
                       borderColor: Colors.transparent,
                       borderWidth: 0,
                     ),
-                    // annotations: <CartesianChartAnnotation>[
-                    //   CartesianChartAnnotation(
-                    //     widget: Container(
-                    //       height: 1,
-                    //       width: 250,
-                    //       color: Colors.red,
-                    //     ),
-                    //     coordinateUnit: CoordinateUnit.logicalPixel,
-                    //     region: AnnotationRegion.chart,
-                    //     verticalAlignment: ChartAlignment.center,
-                    //     horizontalAlignment: ChartAlignment.center,
-                    //     x: 0,
-                    //     y: 25,
-                    //   ),
-                    // ],
                     series: <LineSeries<LiveData, int>>[
                       LineSeries<LiveData, int>(
                         onRendererCreated: (ChartSeriesController controller) {
@@ -337,22 +279,22 @@ class _MonitorScreenState extends State<MonitorScreen> {
                     primaryXAxis: NumericAxis(
                       majorGridLines: const MajorGridLines(width: 0),
                       edgeLabelPlacement: EdgeLabelPlacement.shift,
-                      interval: 3,
+                      interval: 2,
                       title: AxisTitle(
-                        text: 'Time (seconds)',
+                        text: 'Time (minutes)',
                       ),
                     ),
                     primaryYAxis: NumericAxis(
                       axisLine: const AxisLine(width: 0),
                       majorTickLines: const MajorTickLines(size: 0),
                       title: AxisTitle(
-                        text: 'Moisture (C°)',
+                        text: 'Moisture (%)',
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

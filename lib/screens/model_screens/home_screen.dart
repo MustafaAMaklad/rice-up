@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             const Text(
               'Take a photo of your crop to diagnose',
-              style: TextStyle(fontSize: 15),
+              style: TextStyle(fontSize: 20),
             ),
             const SizedBox(
               height: 20,

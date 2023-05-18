@@ -2,12 +2,12 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:rice_up/screens/main_screen.dart';
 
-import '../widgets/background_image.dart';
-import '../widgets/rounded_button.dart';
-import '../widgets/text_input.dart';
+import '../../widgets/background_image.dart';
+import '../../widgets/rounded_button.dart';
+import '../../widgets/text_input.dart';
 
 class SignUpConfirmationScreen extends StatefulWidget {
-  SignUpConfirmationScreen({
+  const SignUpConfirmationScreen({
     Key? key,
     required this.email,
   }) : super(key: key);

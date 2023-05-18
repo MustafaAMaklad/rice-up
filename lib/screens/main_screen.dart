@@ -4,19 +4,30 @@ import 'package:rice_up/widgets/nav_bar.dart';
 import 'package:rice_up/widgets/palatte.dart';
 import 'settings_screen.dart';
 import 'crop_screen.dart';
-import 'dashboard_screen.dart';
-import 'home_screen.dart';
+import 'data_screens/dashboard_screen.dart';
+import 'model_screens/home_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final String? accountName;
+  final String? accountEmail;
+
+  const MainScreen({Key? key, this.accountName, this.accountEmail})
+      : super(key: key);
 
   @override
-  MainScreenState createState() {
-    return MainScreenState();
-  }
+  MainScreenState createState() => MainScreenState();
 }
 
 class MainScreenState extends State<MainScreen> {
+  String? accountName = '';
+  String? accountEmail = '';
+
+  @override
+  void initState() {
+    super.initState();
+    // getUserAttributes();
+  }
+
   int currentIndex = 0;
   final screens = [
     HomeScreen(),
@@ -24,11 +35,25 @@ class MainScreenState extends State<MainScreen> {
     CropScreen(),
     SettingsScreen(),
   ];
+  // Fetch user attributes
+  Future<Map<String, String?>> getUserAttributes() async {
+    final attributes = await Amplify.Auth.fetchUserAttributes();
+    final data = {for (var e in attributes) e.userAttributeKey.key: e.value};
 
-  // final String userName = "John Doe";
-  // final String email = "johndoe@example.com";
-  // final String imageUrl =
-  //     "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
+    Map<String, String?> userAttributes = {};
+    userAttributes['accountUsername'] = data['preferred_username'];
+    userAttributes['accountEmail'] = data['email'];
+    setState(() {
+      accountEmail = userAttributes['accountEmail'];
+      accountName = userAttributes['accountUsername'];
+    });
+    debugPrint(accountEmail);
+    debugPrint(accountName);
+    return userAttributes;
+  }
+
+  // Provider.of<UserProvider>(context, listen: false).updateUserAttributes(userAttributes);
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
@@ -36,7 +61,7 @@ class MainScreenState extends State<MainScreen> {
       key: _scaffoldKey,
       appBar: AppBar(
         leadingWidth: 0.0,
-        elevation: 0.0,
+        elevation: mainElevation,
         title: Image.asset(
           'assets/images/logo-titleonly.png',
           fit: BoxFit.contain,
@@ -44,17 +69,18 @@ class MainScreenState extends State<MainScreen> {
           width: 80,
         ),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const CircleAvatar(
-              radius: 20.0,
-              backgroundColor: backgroundColor,
-              child: Icon(
-                Icons.notification_important_rounded,
-                color: Colors.amber,
-              ),
-            ),
-          ),
+          // IconButton(
+          //   onPressed: () {
+          //   },
+          //   icon: const CircleAvatar(
+          //     radius: 20.0,
+          //     backgroundColor: backgroundColor,
+          //     child: Icon(
+          //       Icons.notification_important_rounded,
+          //       color: Colors.amber,
+          //     ),
+          //   ),
+          // ),
           IconButton(
             onPressed: () {
               _scaffoldKey.currentState?.openDrawer();
@@ -71,7 +97,10 @@ class MainScreenState extends State<MainScreen> {
         ],
         backgroundColor: primaryLightColor,
       ),
-      drawer: const NavBar(),
+      drawer: NavBar(
+        accountName: widget.accountName,
+        accountEmail: widget.accountEmail,
+      ),
       body: IndexedStack(
         index: currentIndex,
         children: screens,

@@ -16,3 +16,5 @@ const TextStyle kBodyButtonText = TextStyle(
 const primaryColor = Colors.amber;
 const primaryLightColor = Color.fromARGB(255, 255, 251, 231);
 const backgroundColor = Color.fromARGB(255, 255, 254, 245);
+const secondaryColor = Colors.amberAccent;
+const mainElevation = 0.5;

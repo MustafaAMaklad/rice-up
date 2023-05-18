@@ -1,9 +1,9 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:rice_up/screens/sign_up_confirmation_screen.dart';
-import '../widgets/palatte.dart';
-import '../widgets/widgets.dart';
+import 'package:rice_up/screens/authentication_screens/sign_up_confirmation_screen.dart';
+import '../../widgets/palatte.dart';
+import '../../widgets/widgets.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -20,6 +20,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
 
   // Sign up auth method
   Future<void> _signUpOnPressed(BuildContext context) async {
@@ -32,7 +33,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             userAttributes: {
               CognitoUserAttributeKey.email: _emailController.text.trim(),
               CognitoUserAttributeKey.preferredUsername:
-                  _usernameController.text.trim()
+                  _usernameController.text.trim(),
+              CognitoUserAttributeKey.phoneNumber:
+                  _phoneNumberController.text.trim(),
             },
           ),
         );
@@ -117,6 +120,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 inputType: TextInputType.emailAddress,
                                 inputAction: TextInputAction.done,
                                 controller: _emailController,
+                              ),
+
+                              // phoneNumberInput
+                              TextInput(
+                                icon: Icons.phone,
+                                hint: 'Phone Number',
+                                inputType: TextInputType.phone,
+                                inputAction: TextInputAction.done,
+                                controller: _phoneNumberController,
                               ),
 
                               // passwordInput

@@ -1,7 +1,7 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:rice_up/widgets/palatte.dart';
-import '../widgets/widgets.dart';
+import '../../widgets/widgets.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -121,43 +121,19 @@ class _SignInScreenState extends State<SignInScreen> {
                                 controller: _passwordController,
                                 obscure: true,
                               ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pushNamedAndRemoveUntil(
-                                      context,
-                                      '/reset_pass_route',
-                                      ModalRoute.withName('/reset_pass_route'));
-                                },
-                                child: const Text(
-                                  'Forgot Password?',
-                                  style: kBodyText,
-                                ),
-                              ),
+                              // TextButton(
+                              //   onPressed: () {
+                              //     Navigator.pushNamedAndRemoveUntil(
+                              //         context,
+                              //         '/reset_pass_route',
+                              //         ModalRoute.withName('/reset_pass_route'));
+                              //   },
+                              //   child: const Text(
+                              //     'Forgot Password?',
+                              //     style: kBodyText,
+                              //   ),
+                              // ),
                               // stay signed in checkbox
-                              CheckboxListTile(
-                                title: const Text(
-                                  'Stay signed in',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                value: _staySignedIn,
-                                onChanged: (value) {
-                                  setState(
-                                    () {
-                                      _staySignedIn = value ?? false;
-                                    },
-                                  );
-                                },
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                    5,
-                                  ),
-                                  side: const BorderSide(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
                             ],
                           ),
                           Column(
