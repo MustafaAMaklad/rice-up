@@ -7,6 +7,7 @@ import 'package:rice_up/screens/authentication_screens/sign_up_confirmation_scre
 import 'package:rice_up/screens/authentication_screens/sign_up_screen.dart';
 import 'package:rice_up/screens/data_screens/stats_screen.dart';
 import 'package:rice_up/screens/temperature_suggestions.dart';
+import '../screens/about_us_screen.dart';
 import '../screens/main_screen.dart';
 import '../screens/data_screens/monitor_screen.dart';
 import '../screens/moisture_suggestions.dart';
@@ -16,10 +17,7 @@ var routes = {
   '/sign_in_route': (context) => const SignInScreen(),
   '/sign_up_route': (context) => const SignUpScreen(),
   '/home_route': (context) => const HomeScreen(),
-  '/main_route': (context) => MainScreen(
-      // accountName: Provider.of<UserProvider>(context).accountName,
-      // accountEmail: Provider.of<UserProvider>(context).accountEmail,
-      ),
+  '/main_route': (context) => const MainScreen(),
   // '/confirmation_route': (context) => const SignUpConfirmationScreen(),
   '/classification_route': (context) => const ClassificationScreen(),
   '/monitor_route': (context) => const MonitorScreen(),
@@ -28,4 +26,5 @@ var routes = {
   '/temperature_suggestions_route': (context) =>
       const TemperatureSuggestionScreen(),
   '/moisture_suggestions_route': (context) => const MoistureSuggestionsScreen(),
+  '/about_us_route': (context) => AboutUsScreen(),
 };

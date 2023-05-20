@@ -21,10 +21,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+  bool _obscurePassword = true;
+  // show loading icon
+  bool _isLoading = false;
 
   // Sign up auth method
   Future<void> _signUpOnPressed(BuildContext context) async {
     if (_formKey.currentState?.validate() ?? false) {
+      setState(() {
+        _isLoading = true; // Show loading icon
+      });
       try {
         final signUpResult = await Amplify.Auth.signUp(
           username: _emailController.text.trim(),
@@ -50,6 +56,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
           content: Text(e.message),
           duration: const Duration(seconds: 5),
         ));
+      } finally {
+        setState(() {
+          _isLoading = false; // Hide loading icon
+        });
       }
     }
   }
@@ -125,7 +135,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               // phoneNumberInput
                               TextInput(
                                 icon: Icons.phone,
-                                hint: 'Phone Number',
+                                hint: 'Phone Number with country code',
                                 inputType: TextInputType.phone,
                                 inputAction: TextInputAction.done,
                                 controller: _phoneNumberController,
@@ -138,7 +148,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 inputType: TextInputType.text,
                                 inputAction: TextInputAction.done,
                                 controller: _passwordController,
-                                obscure: true,
+                                obscure: _obscurePassword,
+                                suffix: IconButton(
+                                  color: Colors.white,
+                                  icon: Icon(
+                                    _obscurePassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
+                                ),
                               ),
                             ],
                           ),
@@ -152,11 +175,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 onPressed: () => _signUpOnPressed(context),
                               ),
                               const SizedBox(
-                                height: 100,
+                                height: 40,
+                              ),
+                              Visibility(
+                                visible: _isLoading,
+                                replacement: const SizedBox(
+                                  height: 35,
+                                ),
+                                child: const CircularProgressIndicator(
+                                  color: primaryColor,
+                                ),
                               ),
                               Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 25),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 25, vertical: 25),
                                 child: Row(
                                   children: [
                                     const Text(

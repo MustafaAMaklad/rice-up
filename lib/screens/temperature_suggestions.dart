@@ -5,46 +5,46 @@ import '../widgets/palatte.dart';
 class TemperatureSuggestionScreen extends StatelessWidget {
   const TemperatureSuggestionScreen({super.key});
   final String redHighTemperature =
-      """This indicates that the temperature degree in the last 24 was above the favorable range most of the day.\nWe suggest the following:\n\n""";
+      '''This indicates that the temperature degree in the last 24 was above the favorable range most of the day.\nWe suggest the following:\n\n''';
   final String redLowTemperature =
-      """This indicates that the temperature degree in the last 24 was below the favorable range most of the day.\nWe suggest the following:\n\n""";
+      '''This indicates that the temperature degree in the last 24 was below the favorable range most of the day.\nWe suggest the following:\n\n''';
   final String greenGoodTemperature =
-      """This indicates that the temperature degree in the last 24 was in the favorable and safe range most of the day.\nWe suggest the following:\n\n""";
-  final String redHighSuggestionTemperature = """
+      '''This indicates that the temperature degree in the last 24 was in the favorable and safe range most of the day.\nWe suggest the following:\n\n''';
+  final String redHighSuggestionTemperature = '''
     1- Increase the amount of water used.\n
     2- Add azole and triazole pesticides\n
     3- Add Bacillus thuringiensis as a bacterial 
-       pesticide.\n""";
-  final String redLowSuggestionTemperature = """
+       pesticide.\n''';
+  final String redLowSuggestionTemperature = '''
     1- Maintain plant nutrition.\n
     2- Reduce irrigation\n
     3- Provide thermal covering.\n
-    4- Ensure proper drainage.\n""";
-  final String greenGoodSuggestionTemperature = """
+    4- Ensure proper drainage.\n''';
+  final String greenGoodSuggestionTemperature = '''
     Keep up the good work, all conditions are 
-    under control\n""";
+    under control\n''';
   final String redHighMoisture =
-      """This indicates that the moisture degree in the last 24 was above the favorable range most of the day.\nWe suggest the following:\n\n""";
+      '''This indicates that the moisture degree in the last 24 was above the favorable range most of the day.\nWe suggest the following:\n\n''';
   final String redLowMoisture =
-      """This indicates that the moisture degree in the last 24 was under the favorable range most of the day.\nWe suggest the following:\n\n""";
+      '''This indicates that the moisture degree in the last 24 was under the favorable range most of the day.\nWe suggest the following:\n\n''';
   final String greenGoodMoisture =
-      """This indicates that the moisture degree in the last 24 was in the favorable and safe range most of the day.\nWe suggest the following:\n\n""";
-  final String redHighSuggestionMoisture = """
+      '''This indicates that the moisture degree in the last 24 was in the favorable and safe range most of the day.\nWe suggest the following:\n\n''';
+  final String redHighSuggestionMoisture = '''
     1- Maintain proper drainage.\n
     2- Reduce the amount of water used for 
        irrigation.\n
     3- Use organic and mineral fertilizers.\n
-    4- Avoid excessive fertilization\n""";
-  final String redLowSuggestionMoisture = """
+    4- Avoid excessive fertilization\n''';
+  final String redLowSuggestionMoisture = '''
     1- Increase the amount of water used for 
        irrigation.\n
     2- Consider using moisture-retaining 
        materials such as agricultural gelatin.\n
     3- Cover the soil and use a layer of organic 
-       materials.\n""";
-  final String greenGoodSuggestionMoisture = """
+       materials.\n''';
+  final String greenGoodSuggestionMoisture = '''
     Keep up the good work, all conditions are 
-    under control\n""";
+    under control\n''';
 
   @override
   Widget build(BuildContext context) {

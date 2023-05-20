@@ -26,7 +26,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Click to Monitor Your Crop in Real-Time',
+              'Click to monitor your crop\'s environment',
               style: TextStyle(
                 fontSize: 20,
               ),

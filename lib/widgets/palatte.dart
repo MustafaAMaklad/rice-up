@@ -11,7 +11,7 @@ const TextStyle kBodyText = TextStyle(
 );
 const TextStyle kBodyButtonText = TextStyle(
   fontSize: 20,
-  color: Color.fromARGB(255, 200, 174, 5),
+  color: primaryColor,
 );
 const primaryColor = Colors.amber;
 const primaryLightColor = Color.fromARGB(255, 255, 251, 231);

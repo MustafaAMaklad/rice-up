@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
 class UserProvider with ChangeNotifier {
-  String accountName = "Mustafa";
-  String accountEmail = "Mu575@mail.com";
+  String accountEmail = "...";
 
-  void updateUserAttributes(Map<String, String?> userAttributes) {
-    accountName = userAttributes['accountUsername'] ?? accountName;
-    accountEmail = userAttributes['accountEmail'] ?? accountEmail;
+  void updateAccountEmail(String email) {
+    accountEmail = email;
     notifyListeners();
   }
 }

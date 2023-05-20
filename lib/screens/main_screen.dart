@@ -8,20 +8,13 @@ import 'data_screens/dashboard_screen.dart';
 import 'model_screens/home_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  final String? accountName;
-  final String? accountEmail;
-
-  const MainScreen({Key? key, this.accountName, this.accountEmail})
-      : super(key: key);
+  const MainScreen({Key? key}) : super(key: key);
 
   @override
   MainScreenState createState() => MainScreenState();
 }
 
 class MainScreenState extends State<MainScreen> {
-  String? accountName = '';
-  String? accountEmail = '';
-
   @override
   void initState() {
     super.initState();
@@ -33,24 +26,23 @@ class MainScreenState extends State<MainScreen> {
     HomeScreen(),
     DashboardScreen(),
     CropScreen(),
-    SettingsScreen(),
   ];
   // Fetch user attributes
-  Future<Map<String, String?>> getUserAttributes() async {
-    final attributes = await Amplify.Auth.fetchUserAttributes();
-    final data = {for (var e in attributes) e.userAttributeKey.key: e.value};
+  // Future<Map<String, String?>> getUserAttributes() async {
+  //   final attributes = await Amplify.Auth.fetchUserAttributes();
+  //   final data = {for (var e in attributes) e.userAttributeKey.key: e.value};
 
-    Map<String, String?> userAttributes = {};
-    userAttributes['accountUsername'] = data['preferred_username'];
-    userAttributes['accountEmail'] = data['email'];
-    setState(() {
-      accountEmail = userAttributes['accountEmail'];
-      accountName = userAttributes['accountUsername'];
-    });
-    debugPrint(accountEmail);
-    debugPrint(accountName);
-    return userAttributes;
-  }
+  //   Map<String, String?> userAttributes = {};
+  //   userAttributes['accountUsername'] = data['preferred_username'];
+  //   userAttributes['accountEmail'] = data['email'];
+  //   setState(() {
+  //     accountEmail = userAttributes['accountEmail'];
+  //     accountName = userAttributes['accountUsername'];
+  //   });
+  //   debugPrint(accountEmail);
+  //   debugPrint(accountName);
+  //   return userAttributes;
+  // }
 
   // Provider.of<UserProvider>(context, listen: false).updateUserAttributes(userAttributes);
 
@@ -97,10 +89,7 @@ class MainScreenState extends State<MainScreen> {
         ],
         backgroundColor: primaryLightColor,
       ),
-      drawer: NavBar(
-        accountName: widget.accountName,
-        accountEmail: widget.accountEmail,
-      ),
+      drawer: NavBar(),
       body: IndexedStack(
         index: currentIndex,
         children: screens,
@@ -121,7 +110,7 @@ class MainScreenState extends State<MainScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.stacked_bar_chart_outlined,
+              Icons.line_axis,
             ),
             label: 'Dashboard',
             backgroundColor: primaryColor,
@@ -133,13 +122,13 @@ class MainScreenState extends State<MainScreen> {
             label: 'Crop',
             backgroundColor: primaryColor,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.device_hub,
-            ),
-            label: 'Devices',
-            backgroundColor: primaryColor,
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(
+          //     Icons.device_hub,
+          //   ),
+          //   label: 'Devices',
+          //   backgroundColor: primaryColor,
+          // ),
         ],
       ),
     );

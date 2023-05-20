@@ -23,6 +23,52 @@ class _ClassificationScreenState extends State<ClassificationScreen> {
   // To display loading icon
   bool _isLoading = true;
 
+  // Result and treatments
+  final String blastFeedback = '''\n
+Factors that contribute to the spread of rice blast disease:
+
+  1. Planting old varieties susceptible to rice 
+      blast disease.
+  2. Delaying planting after the first half of May.
+  3. Excessive nitrogen fertilization beyond 
+      recommended rates.
+  4. Increased humidity and high temperature.
+  5. Prolonged soil dryness for 7-10 days.
+
+
+Preventive measures to control rice blast disease:
+
+  1. Plant resistant and recommended varieties.
+  2. Early planting (first half of May for 
+      nurseries).
+  3. Proper irrigation management and avoiding 
+      prolonged soil dryness.
+  4. Proper disposal of rice straw as a primary 
+      source of infection.\n''';
+  final String brownFeedback = '''\n
+Factors that contribute to the spread of rice brown disease:
+
+1. Favorable conditions: Warm and humid climates.
+2. Infected seed/plant material.
+3. Lack of crop rotation.
+4. Dense planting.
+5. Poor water management
+
+
+Preventive measures to control rice brown disease:
+
+1. Use disease-resistant varieties.
+2. Treat seeds with fungicides or hot water.
+3. Rotate crops to break the disease cycle.
+4. Maintain proper plant spacing.
+5. Manage water effectively.
+6. Practice field sanitation.
+7. Apply fungicides judiciously.\n''';
+  final String noFeedBack = '''\n
+No feedback available for the predicted class.\n''';
+  final String healthyFeedback = '''\n
+The plant appears to be healthy. Keep up the good work!\n''';
+
   @override
   void initState() {
     super.initState();
@@ -55,25 +101,13 @@ class _ClassificationScreenState extends State<ClassificationScreen> {
 
   String getFeedbackBasedOnPrediction(String? prediction) {
     if (prediction == 'Brown') {
-      return 'مرض فطرى يسبب وجوده بقع بنية اللون فى حجم رأس عود الكبريت على الأوراق وكذلك تظهر هذه البقع على الحبوب فتشوه مظهرها (شكل رقم 2) ولا يؤدى هذا المرض إلى فقد كبير فى المحصول تحت الظروف العادية، بينما يشتد الضرر فى حالات الأراضى الضعيفة أو عند إستخدام مياه المصارف فى عملية الرى خاصة للأصناف القابلة للإصابة بشــدة .الحالية مقاومة لهذا المرض فيما عدا الصنف جيزة 177 وسخا 102 . وعموما فإن المقاومة المتكاملة والتى تعتمد على جميع عناصر المقاومة سواء الوقائية مثل إستخدام أصناف مقاومة والإلتزام بالمعدل الموصى به فى التسميد الآزوتى حيث أن النقص يشجع الإصابة والتخلص من مصادر العدوى مثل قش الأرز والحشائش وزراعة تقاوى سليمة أو المقاومة العلاجية عند الضرورة سوف تؤدى إلى زيادة المحصول وذلك برش كبريتات الزنك 1 % بمعدل 1 كجم / فدان أو الهينوزان بمعدل 400 سم3 / ف';
+      return brownFeedback;
     } else if (prediction == 'Blast') {
-      return '''
-العوامل التي تساعد على انتشار مرض اللفحة في الأرز:
-1. زراعة الأصناف القديمة القابلة للإصابة بمرض اللفحة.
-2. التأخير في الزراعة بعد النصف الأول من شهر مايو.
-3. زيادة التسميد الآزوتي عن المعدلات الموصى بها.
-4. زيادة نسبة الرطوبة وارتفاع حرارة الجو.
-5. تجفيف التربة لفترات طويلة من 7-10 أيام.
-الإجراءات الوقائية لمكافحة مرض اللفحة:
-1. زراعة الأصناف المقاومة والموصى بها للزراعة.
-2. التبكير في الزراعة (النصف الأول من شهر مايو للمشاتل).
-3. إدارة الري بشكل مناسب وعدم تجفيف التربة لفترات طويلة.
-4. التخلص من قش الأرز كمصدر أساسي للعدوى.''';
-      ;
+      return blastFeedback;
     } else if (prediction == 'Healthy') {
-      return 'The plant appears to be healthy. Keep up the good work!';
+      return healthyFeedback;
     } else {
-      return 'No feedback available for the predicted class.';
+      return healthyFeedback;
     }
   }
 
@@ -86,14 +120,14 @@ class _ClassificationScreenState extends State<ClassificationScreen> {
       appBar: AppBar(
         centerTitle: true,
         leading: const BackButton(
-          color: Colors.amberAccent,
+          color: secondaryColor,
         ),
         backgroundColor: primaryLightColor,
         elevation: mainElevation,
         title: const Text(
           'Classification Result',
           style: TextStyle(
-            color: Colors.amber,
+            color: primaryColor,
           ),
         ),
       ),
@@ -117,51 +151,52 @@ class _ClassificationScreenState extends State<ClassificationScreen> {
                   height: 20,
                 ),
                 Expanded(
-                  child: Container(
-                    width: 300,
-                    height: 300,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(25)),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 40,
-                            width: 30,
-                          ),
-                          if (_isLoading) ...{
-                            Column(
-                              children: const [
-                                CircularProgressIndicator(
-                                  color: Colors.amber,
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Text("diagnosing..."),
-                              ],
-                            )
-                          } else ...{
-                            Text(
-                              'حالة المحصول: $_imagePrediction ',
-                              style: const TextStyle(
+                  child: SingleChildScrollView(
+                    child: Container(
+                      width: 350,
+                      // height: 300,
+                      decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          borderRadius: BorderRadius.circular(25)),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 40,
+                              width: 30,
+                            ),
+                            if (_isLoading) ...{
+                              Column(
+                                children: const [
+                                  CircularProgressIndicator(
+                                    color: primaryColor,
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text("diagnosing..."),
+                                ],
+                              )
+                            } else ...{
+                              Text(
+                                'Crop Condition: $_imagePrediction\n',
+                                style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.amber),
-                              textDirection: TextDirection.rtl,
-                            ),
-                            Text(
-                              '  التعريف والعلاج: $feedback',
-                              style: const TextStyle(
-                                fontSize: 12.5,
+                                  color: primaryColor,
+                                ),
                               ),
-                              textDirection: TextDirection.rtl,
-                            ),
-                          }
-                        ],
+                              Text(
+                                'Preventive measures and treatment: $feedback',
+                                style: const TextStyle(
+                                  fontSize: 18.0,
+                                ),
+                              ),
+                            }
+                          ],
+                        ),
                       ),
                     ),
                   ),

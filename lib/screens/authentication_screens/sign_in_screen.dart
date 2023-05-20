@@ -1,6 +1,8 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rice_up/widgets/palatte.dart';
+import '../../user_provider.dart';
 import '../../widgets/widgets.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -18,11 +20,18 @@ class _SignInScreenState extends State<SignInScreen> {
   // intialize text fields controllers
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _obscurePassword = true;
 
   bool _staySignedIn = false;
+  // loading icon indecator
+  bool _isLoading = false;
   // sing in method
   Future<void> _signInOnPressed(BuildContext context) async {
     if (_formKey.currentState?.validate() ?? false) {
+      setState(() {
+        _isLoading = true; // Show loading icon
+      });
+
       // ToDo sign in code
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
@@ -33,13 +42,9 @@ class _SignInScreenState extends State<SignInScreen> {
           password: password,
         );
         if (signInResult.isSignedIn) {
-          //           if (_staySignedIn) {
-          //   await Amplify.Auth.setAuthSession(
-          //     persist: true,
-          //     maxAge: Duration(days: 30),
-          //   );
-          // }
-
+          final userProvider =
+              Provider.of<UserProvider>(context, listen: false);
+          userProvider.updateAccountEmail(email);
           _goTOMainScreen(signInContext);
         }
       } on AuthException catch (e) {
@@ -50,6 +55,10 @@ class _SignInScreenState extends State<SignInScreen> {
             duration: const Duration(seconds: 5),
           ),
         );
+      } finally {
+        setState(() {
+          _isLoading = false; // Hide loading icon
+        });
       }
     }
   }
@@ -119,7 +128,20 @@ class _SignInScreenState extends State<SignInScreen> {
                                 inputType: TextInputType.text,
                                 inputAction: TextInputAction.done,
                                 controller: _passwordController,
-                                obscure: true,
+                                obscure: _obscurePassword,
+                                suffix: IconButton(
+                                  color: Colors.white,
+                                  icon: Icon(
+                                    _obscurePassword
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _obscurePassword = !_obscurePassword;
+                                    });
+                                  },
+                                ),
                               ),
                               // TextButton(
                               //   onPressed: () {
@@ -146,7 +168,19 @@ class _SignInScreenState extends State<SignInScreen> {
                                 onPressed: () => _signInOnPressed(context),
                               ),
                               const SizedBox(
-                                height: 80,
+                                height: 50,
+                              ),
+                              Visibility(
+                                visible: _isLoading,
+                                replacement: const SizedBox(
+                                  height: 35,
+                                ),
+                                child: const CircularProgressIndicator(
+                                  color: primaryColor,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 30,
                               ),
                               Column(
                                 children: [

@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future pickImage() async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.camera);
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) {
         return;
       }
@@ -44,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Take a photo of your crop to diagnose',
+              'Take a photo of your crop to be diagnosed',
               style: TextStyle(fontSize: 20),
             ),
             const SizedBox(

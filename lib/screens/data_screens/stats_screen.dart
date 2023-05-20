@@ -66,7 +66,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
 
     // Subtract 24 hours from the current time
     DateTime timeBefore24Hours =
-        currentTime.subtract(const Duration(hours: 7 * 24));
+        currentTime.subtract(const Duration(hours: 1 * 24));
 
     // Format the time in the desired format
     String formattedTime = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")

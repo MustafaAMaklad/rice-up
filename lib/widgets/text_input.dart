@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import 'palatte.dart';
 
 class TextInput extends StatelessWidget {
-  const TextInput(
-      {super.key,
-      required this.icon,
-      required this.hint,
-      required this.inputType,
-      required this.inputAction,
-      required this.controller,
-      this.obscure = false});
+  const TextInput({
+    super.key,
+    required this.icon,
+    required this.hint,
+    required this.inputType,
+    required this.inputAction,
+    required this.controller,
+    this.suffix,
+    this.obscure = false,
+  });
 
   final IconData icon;
   final String hint;
@@ -18,6 +20,7 @@ class TextInput extends StatelessWidget {
   final TextInputAction inputAction;
   final TextEditingController? controller;
   final bool obscure;
+  final Widget? suffix;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -47,6 +50,7 @@ class TextInput extends StatelessWidget {
               ),
             ),
             hintStyle: kBodyText,
+            suffixIcon: suffix,
           ),
           obscureText: obscure,
           style: kBodyText,

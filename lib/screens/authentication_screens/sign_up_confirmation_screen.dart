@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rice_up/screens/main_screen.dart';
 
 import '../../widgets/background_image.dart';
+import '../../widgets/palatte.dart';
 import '../../widgets/rounded_button.dart';
 import '../../widgets/text_input.dart';
 
@@ -24,9 +25,13 @@ class _SignUpConfirmationScreenState extends State<SignUpConfirmationScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _confirmationCodeController =
       TextEditingController();
+  bool _isLoading = false;
 
   Future<void> _confirmOnPressed(BuildContext context) async {
     if (_formKey.currentState?.validate() ?? false) {
+      setState(() {
+        _isLoading = true;
+      });
       final confirmationCode = _confirmationCodeController.text;
       print("Confirmation code: $confirmationCode");
       try {
@@ -45,12 +50,16 @@ class _SignUpConfirmationScreenState extends State<SignUpConfirmationScreen> {
           content: Text(e.message),
           duration: const Duration(seconds: 5),
         ));
+      } finally {
+        setState(() {
+          _isLoading = false; // Hide loading icon
+        });
       }
     }
   }
 
   void goToMainScreen(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => MainScreen()));
+    Navigator.pushNamed(context, '/sign_in_route');
   }
 
   @override
@@ -115,6 +124,18 @@ class _SignUpConfirmationScreenState extends State<SignUpConfirmationScreen> {
                               RoundedButton(
                                 buttonText: 'Confirm',
                                 onPressed: () => _confirmOnPressed(context),
+                              ),
+                              const SizedBox(
+                                height: 40,
+                              ),
+                              Visibility(
+                                visible: _isLoading,
+                                replacement: const SizedBox(
+                                  height: 35,
+                                ),
+                                child: const CircularProgressIndicator(
+                                  color: primaryColor,
+                                ),
                               ),
                               const SizedBox(
                                 height: 80,
