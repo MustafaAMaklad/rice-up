@@ -27,24 +27,6 @@ class MainScreenState extends State<MainScreen> {
     DashboardScreen(),
     CropScreen(),
   ];
-  // Fetch user attributes
-  // Future<Map<String, String?>> getUserAttributes() async {
-  //   final attributes = await Amplify.Auth.fetchUserAttributes();
-  //   final data = {for (var e in attributes) e.userAttributeKey.key: e.value};
-
-  //   Map<String, String?> userAttributes = {};
-  //   userAttributes['accountUsername'] = data['preferred_username'];
-  //   userAttributes['accountEmail'] = data['email'];
-  //   setState(() {
-  //     accountEmail = userAttributes['accountEmail'];
-  //     accountName = userAttributes['accountUsername'];
-  //   });
-  //   debugPrint(accountEmail);
-  //   debugPrint(accountName);
-  //   return userAttributes;
-  // }
-
-  // Provider.of<UserProvider>(context, listen: false).updateUserAttributes(userAttributes);
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override

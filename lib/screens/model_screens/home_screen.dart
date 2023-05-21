@@ -18,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future pickImage() async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      final image = await ImagePicker().pickImage(source: ImageSource.camera);
       if (image == null) {
         return;
       }
