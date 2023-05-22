@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart'; //  flutter essentials
+import 'package:rice_up/screens/data_screens/no_devices.dart';
 import 'package:rice_up/widgets/palatte.dart'; // custom widget
 import 'package:syncfusion_flutter_charts/charts.dart'; // charts and visualization
 
@@ -9,6 +10,9 @@ import '../../models/Reading.dart'; // for GraphQL models
 import 'package:amplify_api/amplify_api.dart'; // for appsync graphql api
 
 import "dart:convert"; // for response data parsing
+import 'dart:convert' as convert;
+
+import 'package:http/http.dart' as http;
 
 class MonitorScreen extends StatefulWidget {
   const MonitorScreen({Key? key}) : super(key: key);
@@ -26,7 +30,8 @@ class _MonitorScreenState extends State<MonitorScreen> {
 
   int time = 23; // Start X-axis (time) for new subscription at 19
   int limit = 24; // limit of first query
-  String deviceId = "arn:aws:iot:us-east-1:404548260653:thing/ESP32_Farm1";
+  String deviceId = '';
+  String deviceName = '';
 
   // Intialize data structrues for items to be displayed
   List<int> lastTemperature = [];
@@ -35,6 +40,10 @@ class _MonitorScreenState extends State<MonitorScreen> {
 
   // defining Subscribtion variable
   StreamSubscription<GraphQLResponse<Reading>>? subscription;
+
+  String userId = '';
+  int _deviceCount = 0;
+  bool isLoading = true;
 
   @override
   void dispose() {
@@ -45,8 +54,22 @@ class _MonitorScreenState extends State<MonitorScreen> {
   @override
   void initState() {
     super.initState();
-    // Checks internet connection to establish subscription and query data
     checkInternetConnection(showSnackBarMessage);
+
+    // Checks internet connection to establish subscription and query data
+    // checkInternetConnection(showSnackBarMessage);
+  }
+
+  void checkInternetConnectionToSubscribe(
+      void Function(String) showMessage) async {
+    var connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      showMessage(
+          'No internet connection. Try connecting to the internet again to be able to view data.');
+    } else {
+      subscribe(); // Establish API subscription
+      init(); // Get last Items recorded previously
+    }
   }
 
   void checkInternetConnection(void Function(String) showMessage) async {
@@ -55,8 +78,26 @@ class _MonitorScreenState extends State<MonitorScreen> {
       showMessage(
           'No internet connection. Try connecting to the internet again to be able to view data.');
     } else {
-      subscribe(); // Establish API subscription
-      init(); // Get last Items recorded previously
+      getDeviceCount().then((Map<String, String> data) {
+        final Data = data;
+        debugPrint('Dataaaaaaaaaaaaa: $Data');
+        _deviceCount = int.parse(Data['devicesCount'] ?? '0');
+
+        debugPrint('devicecountttttttt:$_deviceCount');
+        if (_deviceCount != 0) {
+          deviceId = Data['deviceId'] ?? '';
+          debugPrint('deviceIDDDD: $deviceId');
+          deviceName = Data['deviceName'] ?? '';
+          checkInternetConnectionToSubscribe(showSnackBarMessage);
+          setState(() {
+            isLoading = false;
+          });
+        } else {
+          setState(() {
+            isLoading = false;
+          });
+        }
+      });
     }
   }
 
@@ -70,6 +111,43 @@ class _MonitorScreenState extends State<MonitorScreen> {
           lastTemperature); // Get last previous 10 temperature data
       moistureChartData = getMoisChartData(lastMoisture);
     });
+  }
+
+  Future<Map<String, String>> getDeviceCount() async {
+    final user = await Amplify.Auth.getCurrentUser();
+    setState(() {
+      userId = user.userId;
+    });
+    const apiKey = 'aWzzjgesucaB0UYwycJwo6BiAMcynYSr9Kj7JqxS';
+    final url =
+        'https://pb3crrjdhc.execute-api.us-east-1.amazonaws.com/dev/devices?user_id=$userId';
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {'x-api-key': apiKey},
+    );
+
+    if (response.statusCode == 200) {
+      final jsonResponse = convert.jsonDecode(response.body);
+      final devicesCount = jsonResponse['number of devices'];
+      if (devicesCount > 0) {
+        final deviceId = jsonResponse['devices_id'][0];
+        final deviceName = jsonResponse['devices names'][0];
+        return {
+          'deviceId': deviceId,
+          'devicesCount': devicesCount.toString(),
+          'deviceName': deviceName
+        };
+      }
+      print('Number of books about HTTP: $devicesCount.');
+      debugPrint(jsonResponse.toString());
+      setState(() {
+        _deviceCount = devicesCount;
+      });
+      return {'devicesCount': devicesCount.toString()};
+    } else {
+      print('Request failed with status: ${response.statusCode}.');
+      return {'devicesCount': ''};
+    }
   }
 
   // display error message when there is no internet connection
@@ -187,7 +265,7 @@ class _MonitorScreenState extends State<MonitorScreen> {
 
   // Go to summary stats screen when tab on the chart
   void chartOnPressed() {
-    Navigator.pushNamed(context, '/stats_route');
+    Navigator.pushNamed(context, '/stats_route', arguments: deviceId);
   }
 
   @override
@@ -201,100 +279,143 @@ class _MonitorScreenState extends State<MonitorScreen> {
         backgroundColor: primaryLightColor,
         elevation: mainElevation,
         title: const Text(
-          'Sensor Measurements',
+          'Monitor',
           style: TextStyle(
             color: primaryColor,
           ),
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              GestureDetector(
-                onTap: chartOnPressed,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  // Temperature chart
-                  child: SfCartesianChart(
-                    title: ChartTitle(
-                      text: 'Temperature in Field',
-                      alignment: ChartAlignment.center,
-                      borderColor: Colors.transparent,
-                      borderWidth: 0,
-                    ),
-                    series: <LineSeries<LiveData, int>>[
-                      LineSeries<LiveData, int>(
-                        onRendererCreated: (ChartSeriesController controller) {
-                          _chartSeriesControllerTemp = controller;
-                        },
-                        dataSource: temperatureChartData,
-                        color: Colors.orange,
-                        xValueMapper: (LiveData sales, _) => sales.time,
-                        yValueMapper: (LiveData sales, _) => sales.data,
-                      ),
-                    ],
-                    primaryXAxis: NumericAxis(
-                      majorGridLines: const MajorGridLines(width: 0),
-                      edgeLabelPlacement: EdgeLabelPlacement.shift,
-                      interval: 2,
-                      title: AxisTitle(
-                        text: 'Time (minutes)',
-                      ),
-                    ),
-                    primaryYAxis: NumericAxis(
-                      axisLine: const AxisLine(width: 0),
-                      majorTickLines: const MajorTickLines(size: 0),
-                      title: AxisTitle(
-                        text: 'Temperature (C°)',
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: chartOnPressed,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20.0),
-                  // Moisture chart
-                  child: SfCartesianChart(
-                    title: ChartTitle(
-                      text: 'Moisture in Field',
-                      alignment: ChartAlignment.center,
-                      borderColor: Colors.transparent,
-                      borderWidth: 0,
-                    ),
-                    series: <LineSeries<LiveData, int>>[
-                      LineSeries<LiveData, int>(
-                        onRendererCreated: (ChartSeriesController controller) {
-                          _chartSeriesControllerMois = controller;
-                        },
-                        dataSource: moistureChartData,
-                        color: Colors.blue,
-                        xValueMapper: (LiveData sales, _) => sales.time,
-                        yValueMapper: (LiveData sales, _) => sales.data,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                isLoading
+                    ? // Show loading icon while fetching device count
+                    const Center(
+                        child: CircularProgressIndicator(
+                          color: primaryColor,
+                        ),
                       )
-                    ],
-                    primaryXAxis: NumericAxis(
-                      majorGridLines: const MajorGridLines(width: 0),
-                      edgeLabelPlacement: EdgeLabelPlacement.shift,
-                      interval: 2,
-                      title: AxisTitle(
-                        text: 'Time (minutes)',
-                      ),
-                    ),
-                    primaryYAxis: NumericAxis(
-                      axisLine: const AxisLine(width: 0),
-                      majorTickLines: const MajorTickLines(size: 0),
-                      title: AxisTitle(
-                        text: 'Moisture (%)',
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+                    : (_deviceCount == 0)
+                        ? // No devices message
+                        const NoDevices()
+                        : Column(
+                            children: [
+                              // Render charts
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  'Device Name: ${this.deviceName}',
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 114, 147, 67),
+                                    fontSize: 18.0,
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: chartOnPressed,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 20.0),
+                                  // Temperature chart
+                                  child: SfCartesianChart(
+                                    title: ChartTitle(
+                                      text: 'Temperature in Field',
+                                      alignment: ChartAlignment.center,
+                                      borderColor: Colors.transparent,
+                                      borderWidth: 0,
+                                    ),
+                                    series: <LineSeries<LiveData, int>>[
+                                      LineSeries<LiveData, int>(
+                                        onRendererCreated:
+                                            (ChartSeriesController controller) {
+                                          _chartSeriesControllerTemp =
+                                              controller;
+                                        },
+                                        dataSource: temperatureChartData,
+                                        color: Colors.orange,
+                                        xValueMapper: (LiveData sales, _) =>
+                                            sales.time,
+                                        yValueMapper: (LiveData sales, _) =>
+                                            sales.data,
+                                      ),
+                                    ],
+                                    primaryXAxis: NumericAxis(
+                                      majorGridLines:
+                                          const MajorGridLines(width: 0),
+                                      edgeLabelPlacement:
+                                          EdgeLabelPlacement.shift,
+                                      interval: 2,
+                                      title: AxisTitle(
+                                        text: 'Time (minutes)',
+                                      ),
+                                    ),
+                                    primaryYAxis: NumericAxis(
+                                      axisLine: const AxisLine(width: 0),
+                                      majorTickLines:
+                                          const MajorTickLines(size: 0),
+                                      title: AxisTitle(
+                                        text: 'Temperature (C°)',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: chartOnPressed,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 20.0),
+                                  // Moisture chart
+                                  child: SfCartesianChart(
+                                    title: ChartTitle(
+                                      text: 'Moisture in Field',
+                                      alignment: ChartAlignment.center,
+                                      borderColor: Colors.transparent,
+                                      borderWidth: 0,
+                                    ),
+                                    series: <LineSeries<LiveData, int>>[
+                                      LineSeries<LiveData, int>(
+                                        onRendererCreated:
+                                            (ChartSeriesController controller) {
+                                          _chartSeriesControllerMois =
+                                              controller;
+                                        },
+                                        dataSource: moistureChartData,
+                                        color: Colors.blue,
+                                        xValueMapper: (LiveData sales, _) =>
+                                            sales.time,
+                                        yValueMapper: (LiveData sales, _) =>
+                                            sales.data,
+                                      )
+                                    ],
+                                    primaryXAxis: NumericAxis(
+                                      majorGridLines:
+                                          const MajorGridLines(width: 0),
+                                      edgeLabelPlacement:
+                                          EdgeLabelPlacement.shift,
+                                      interval: 2,
+                                      title: AxisTitle(
+                                        text: 'Time (minutes)',
+                                      ),
+                                    ),
+                                    primaryYAxis: NumericAxis(
+                                      axisLine: const AxisLine(width: 0),
+                                      majorTickLines:
+                                          const MajorTickLines(size: 0),
+                                      title: AxisTitle(
+                                        text: 'Moisture (%)',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+              ],
+            ),
           ),
         ),
       ),

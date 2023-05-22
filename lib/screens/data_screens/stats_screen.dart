@@ -25,7 +25,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     'Min Moisture in The Last 24 Hours': 0,
     'Average Moisture in The Last 24 Hours': 0,
   };
-
+  String? deviceId;
   @override
   void initState() {
     super.initState();
@@ -33,10 +33,22 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     init(showSnackBarMessage); // Get Statistics data
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Retrieve the deviceId argument from the ModalRoute
+    setState(() {
+      deviceId = ModalRoute.of(context)?.settings.arguments.toString();
+    });
+
+    debugPrint('device ID: $deviceId');
+  }
+
   // Fetch data when screen opens
   Future<void> init(void Function(String) showMessage) async {
     // Query Statistics data
-    List<Map<String, int>> stats = await queryStatistics();
+    List<Map<String, int>> stats = await queryStatistics(context);
 
     // Updata the state of Intialized variables
     if (stats.isEmpty) {
@@ -76,10 +88,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     return formattedTime.toString();
   }
 
-  Future<List<Map<String, int>>> queryStatistics() async {
+  Future<List<Map<String, int>>> queryStatistics(BuildContext context) async {
     String time = getBefore24HTime();
+    debugPrint('hereee e:$deviceId');
     String document = """
-            query MyQuery {
+           query MyQuery {
               searchReadings(aggregates: [
                 {field: temperature, name: "Average Temperature in The Last 24 Hours", type: avg},
                 {field: moisture, name: "Average Moisture in The Last 24 Hours", type: avg},
@@ -88,7 +101,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 {field: moisture, name: "Min Moisture in The Last 24 Hours", type: min},
                 {field: moisture, name: "Max Moisture in The Last 24 Hours", type: max}
                 ],
-                filter: {createdAt: {gte: "$time"}}) {
+                filter: {createdAt: {gte: "$time"}, device_id : {eq: "arn:aws:iot:us-east-1:404548260653:thing/ESP32_Farm1"}, temperature : {gt:0}, moisture : {lt:100, gt:0}}) {
                 aggregateItems {
                   name
                   result {
@@ -97,7 +110,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                     }
                   }
                 }
-                total
+                
               }
             }""";
 

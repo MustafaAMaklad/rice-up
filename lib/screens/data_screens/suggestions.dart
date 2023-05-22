@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/palatte.dart';
+import '../../widgets/palatte.dart';
 
-class TemperatureSuggestionScreen extends StatelessWidget {
-  const TemperatureSuggestionScreen({super.key});
+class SuggestionScreen extends StatelessWidget {
+  const SuggestionScreen({super.key});
   final String redHighTemperature =
       '''This indicates that the temperature degree in the last 24 was above the favorable range most of the day.\nWe suggest the following:\n\n''';
   final String redLowTemperature =

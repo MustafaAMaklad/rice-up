@@ -77,7 +77,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _checkAuthSessionWithDelay() async {
-    await Future.delayed(Duration(seconds: 7)); // Add a delay of 3 seconds
+    await Future.delayed(Duration(seconds: 5)); // Add a delay of 3 seconds
   }
 
   @override
@@ -88,19 +88,22 @@ class _MyAppState extends State<MyApp> {
       future: _checkAuthSessionWithDelay(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width: 150,
-                height: 150,
-                child: Image.asset('assets/images/logo.png'),
-              ), // Replace with your image asset
-              const SizedBox(height: 16.0),
-              const CircularProgressIndicator(
-                color: primaryColor,
-              ),
-            ],
+          return Container(
+            color: Color.fromARGB(255, 114, 147, 67),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 150,
+                  height: 150,
+                  child: Image.asset('assets/images/logo.png'),
+                ), // Replace with your image asset
+                const SizedBox(height: 16.0),
+                const CircularProgressIndicator(
+                  color: primaryColor,
+                ),
+              ],
+            ),
           );
         } else {
           debugPrint('Initial route: $initialRoute');

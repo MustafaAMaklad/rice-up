@@ -110,7 +110,7 @@ class _SignUpConfirmationScreenState extends State<SignUpConfirmationScreen> {
                               TextInput(
                                 icon: Icons.numbers,
                                 hint: 'Confirmation Code',
-                                inputType: TextInputType.text,
+                                inputType: TextInputType.number,
                                 inputAction: TextInputAction.done,
                                 controller: _confirmationCodeController,
                               ),
