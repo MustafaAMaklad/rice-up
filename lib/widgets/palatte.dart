@@ -18,3 +18,9 @@ const primaryLightColor = Color.fromARGB(255, 255, 251, 231);
 const backgroundColor = Color.fromARGB(255, 255, 254, 245);
 const secondaryColor = Colors.amberAccent;
 const mainElevation = 0.5;
+
+const veryHigh = Color.fromARGB(255, 255, 17, 0);
+const high = Color.fromARGB(255, 244, 124, 54);
+const normal = Colors.green;
+const low = Color.fromARGB(255, 244, 124, 54);
+const veryLow = Color.fromARGB(255, 255, 17, 0);

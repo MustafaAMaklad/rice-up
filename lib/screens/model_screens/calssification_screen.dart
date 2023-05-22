@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:pytorch_mobile/model.dart';
 import 'package:pytorch_mobile/pytorch_mobile.dart';
 import 'package:rice_up/widgets/palatte.dart';
-// import 'package:flutter/services.dart' show rootBundle;
 
 class ClassificationScreen extends StatefulWidget {
   const ClassificationScreen({Key? key}) : super(key: key);

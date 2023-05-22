@@ -77,7 +77,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _checkAuthSessionWithDelay() async {
-    await Future.delayed(Duration(seconds: 5)); // Add a delay of 3 seconds
+    await Future.delayed(Duration(seconds: 8)); // Add a delay of 3 seconds
   }
 
   @override

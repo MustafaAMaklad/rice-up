@@ -22,7 +22,6 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
-  bool _staySignedIn = false;
   // loading icon indecator
   bool _isLoading = false;
   // sing in method
@@ -143,19 +142,6 @@ class _SignInScreenState extends State<SignInScreen> {
                                   },
                                 ),
                               ),
-                              // TextButton(
-                              //   onPressed: () {
-                              //     Navigator.pushNamedAndRemoveUntil(
-                              //         context,
-                              //         '/reset_pass_route',
-                              //         ModalRoute.withName('/reset_pass_route'));
-                              //   },
-                              //   child: const Text(
-                              //     'Forgot Password?',
-                              //     style: kBodyText,
-                              //   ),
-                              // ),
-                              // stay signed in checkbox
                             ],
                           ),
                           Column(

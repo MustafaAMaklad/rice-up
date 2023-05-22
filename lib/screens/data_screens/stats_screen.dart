@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:rice_up/widgets/palatte.dart';
@@ -30,19 +28,19 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   void initState() {
     super.initState();
 
-    init(showSnackBarMessage); // Get Statistics data
+    // Get Statistics data
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    // Retrieve the deviceId argument from the ModalRoute
     setState(() {
       deviceId = ModalRoute.of(context)?.settings.arguments.toString();
+      init(showSnackBarMessage);
     });
-
     debugPrint('device ID: $deviceId');
+
+    // Retrieve the deviceId argument from the ModalRoute
   }
 
   // Fetch data when screen opens
@@ -101,7 +99,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 {field: moisture, name: "Min Moisture in The Last 24 Hours", type: min},
                 {field: moisture, name: "Max Moisture in The Last 24 Hours", type: max}
                 ],
-                filter: {createdAt: {gte: "$time"}, device_id : {eq: "arn:aws:iot:us-east-1:404548260653:thing/ESP32_Farm1"}, temperature : {gt:0}, moisture : {lt:100, gt:0}}) {
+                filter: {createdAt: {gte: "$time"}, device_id : {eq: "$deviceId"}, temperature : {gt:0}, moisture : {lt:100, gt:0}}) {
                 aggregateItems {
                   name
                   result {
@@ -113,6 +111,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 
               }
             }""";
+    debugPrint('Doc: $document');
 
     try {
       final request = GraphQLRequest(document: document);
@@ -137,11 +136,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         } else {
           moistureStats[name] = value.toInt();
         }
-
-        // debugPrint('Name: $name');
-        // debugPrint('Value: $value');
-        // debugPrint('temp now: $temp');
-        // debugPrint('mois now: $mois');
       }
       return [temperatureStats, moistureStats];
     } on ApiException catch (e) {
@@ -178,13 +172,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              // const Padding(
-              //   padding: EdgeInsets.only(left: 8.0, top: 8.0),
-              //   child: Text(
-              //     "Summary Statistics",
-              //     style: TextStyle(color: primaryColor, fontSize: 28.0),
-              //   ),
-              // ),
               Padding(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 20.0, vertical: 20.0),
@@ -239,9 +226,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                               temperatureStats.values.elementAt(index);
                           final isAvg =
                               key == 'Average Temperature in The Last 24 Hours';
-                          final isHigh = (value > 35);
-                          final isNormal = (value >= 25) && (value <= 35);
-                          final isLow = (value < 30);
+                          final isVeryHigh = (value > 35);
+                          final isHigh = (value > 30 && value <= 35);
+                          final isNormal = (value >= 20 && value <= 30);
+                          final isLow = (value >= 10 && value < 20);
+                          final isVeryLow = (value < 10);
 
                           return Container(
                             width: 150,
@@ -266,32 +255,52 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                     style: TextStyle(
                                       fontSize: 40,
                                       color: isAvg
-                                          ? (isHigh
-                                              ? Colors.red
-                                              : (isNormal
-                                                  ? Colors.green
-                                                  : Colors.red))
+                                          ? (isVeryHigh
+                                              ? const Color.fromARGB(
+                                                  255, 255, 17, 0)
+                                              : (isHigh
+                                                  ? const Color.fromARGB(
+                                                      255, 255, 94, 0)
+                                                  : (isNormal
+                                                      ? Colors.green
+                                                      : (isLow
+                                                          ? const Color
+                                                                  .fromARGB(
+                                                              255, 255, 94, 0)
+                                                          : const Color
+                                                                  .fromARGB(255,
+                                                              255, 17, 0)))))
                                           : Colors.orange,
                                     ),
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
                                     isAvg
-                                        ? (isHigh
-                                            ? 'High Avg Temperature'
-                                            : (isNormal
-                                                ? 'Good Avg Temperature'
-                                                : 'Low Avg Temperature'))
+                                        ? (isVeryHigh
+                                            ? 'Very High Avg Temperature'
+                                            : (isHigh
+                                                ? 'High Avg Temperature'
+                                                : (isNormal
+                                                    ? 'Normal Avg Temperature'
+                                                    : (isLow
+                                                        ? 'Low Avg Temperature'
+                                                        : 'Very Low Avg Temperature'))))
                                         : '',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: isHigh
-                                          ? Colors.red
-                                          : isNormal
-                                              ? Colors.green
-                                              : isLow
-                                                  ? Colors.red
-                                                  : Colors.orange,
+                                      color: isVeryHigh
+                                          ? const Color.fromARGB(
+                                              255, 255, 17, 0)
+                                          : isHigh
+                                              ? const Color.fromARGB(
+                                                  255, 255, 94, 0)
+                                              : isNormal
+                                                  ? Colors.green
+                                                  : isLow
+                                                      ? const Color.fromARGB(
+                                                          255, 255, 94, 0)
+                                                      : const Color.fromARGB(
+                                                          255, 255, 17, 0),
                                     ),
                                   ),
                                 ],
@@ -311,10 +320,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           final value = moistureStats.values.elementAt(index);
                           final isAvg =
                               key == 'Average Moisture in The Last 24 Hours';
-                          final isHigh = isAvg && (value > 80);
-                          final isNormal =
-                              isAvg && (value >= 60) && (value <= 80);
-                          final isLow = isAvg && (value < 60);
+                          final isVeryHigh = (value > 90);
+                          final isHigh = (value > 70 && value <= 90);
+                          final isNormal = (value >= 40 && value <= 70);
+                          final isLow = (value >= 20 && value < 40);
+                          final isVeryLow = (value < 20);
 
                           return Container(
                             width: 150,
@@ -338,33 +348,52 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                                     '$value %',
                                     style: TextStyle(
                                       fontSize: 40,
-                                      color: isHigh
-                                          ? Colors.red
-                                          : isNormal
-                                              ? Colors.green
-                                              : isLow
-                                                  ? Colors.red
-                                                  : Colors.blue,
+                                      color: isAvg
+                                          ? (isVeryHigh
+                                              ? const Color.fromARGB(
+                                                  255, 255, 17, 0)
+                                              : (isHigh
+                                                  ? const Color.fromARGB(
+                                                      255, 255, 94, 0)
+                                                  : (isNormal
+                                                      ? Colors.green
+                                                      : (isLow
+                                                          ? const Color
+                                                                  .fromARGB(
+                                                              255, 255, 94, 0)
+                                                          : const Color
+                                                                  .fromARGB(255,
+                                                              255, 17, 0)))))
+                                          : Colors.blue,
                                     ),
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
                                     isAvg
-                                        ? (isHigh
-                                            ? 'High Avg Moisture'
-                                            : (isNormal
-                                                ? 'Good Avg Moisture'
-                                                : 'Low Avg Moisture'))
+                                        ? (isVeryHigh
+                                            ? 'Very High Avg Moisture'
+                                            : (isHigh
+                                                ? 'High Avg Moisture'
+                                                : (isNormal
+                                                    ? 'Normal Avg Moisture'
+                                                    : (isLow
+                                                        ? 'Low Avg Moisture'
+                                                        : 'Very Low Avg Moisture'))))
                                         : '',
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: isHigh
-                                          ? Colors.red
-                                          : isNormal
-                                              ? Colors.green
-                                              : isLow
-                                                  ? Colors.red
-                                                  : Colors.blue,
+                                      color: isVeryHigh
+                                          ? const Color.fromARGB(
+                                              255, 255, 17, 0)
+                                          : isHigh
+                                              ? const Color.fromARGB(
+                                                  255, 255, 94, 0)
+                                              : isNormal
+                                                  ? Colors.green
+                                                  : isLow
+                                                      ? const Color.fromARGB(
+                                                          255, 255, 94, 0)
+                                                      : Colors.red,
                                     ),
                                   ),
                                 ],

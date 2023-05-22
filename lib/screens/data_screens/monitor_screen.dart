@@ -104,13 +104,15 @@ class _MonitorScreenState extends State<MonitorScreen> {
   Future<void> init() async {
     // Get last Items recorded previously
     List<List<int>> lastItems = await queryListItems();
-    lastTemperature = lastItems[0];
-    lastMoisture = lastItems[1];
-    setState(() {
-      temperatureChartData = getTempChartData(
-          lastTemperature); // Get last previous 10 temperature data
-      moistureChartData = getMoisChartData(lastMoisture);
-    });
+    if (!lastItems.isEmpty) {
+      lastTemperature = lastItems[0];
+      lastMoisture = lastItems[1];
+      setState(() {
+        temperatureChartData = getTempChartData(
+            lastTemperature); // Get last previous 10 temperature data
+        moistureChartData = getMoisChartData(lastMoisture);
+      });
+    }
   }
 
   Future<Map<String, String>> getDeviceCount() async {
@@ -170,10 +172,12 @@ class _MonitorScreenState extends State<MonitorScreen> {
     subscription = operation.listen(
       (event) {
         setState(() {
-          readings.add(event.data!);
-          int temperature = event.data!.temperature!.toInt();
-          int moisture = event.data!.moisture!.toInt();
-          updateData(temperature, moisture);
+          if (event.data!.device_id == deviceId) {
+            readings.add(event.data!);
+            int temperature = event.data!.temperature!.toInt();
+            int moisture = event.data!.moisture!.toInt();
+            updateData(temperature, moisture);
+          }
         });
 
         safePrint('Subscription event data received: ${event.data}');
@@ -227,17 +231,22 @@ class _MonitorScreenState extends State<MonitorScreen> {
 
       List<int> temp = [];
       List<int> mois = [];
-      for (int i = 0; i < limit; i++) {
-        temp.add(data[i]['temperature'].toInt());
-        mois.add(data[i]['moisture'].toInt());
+      List<Map> values = List.from(data);
+      if (values.length >= 24) {
+        for (int i = 0; i < limit; i++) {
+          temp.add(data[i]['temperature'].toInt());
+          mois.add(data[i]['moisture'].toInt());
+          safePrint("temp:  $temp");
+          safePrint("mois:  $mois");
+          safePrint((temp).runtimeType);
+        }
+        return [temp, mois];
+      } else {
+        return [];
       }
-      safePrint("temp:  $temp");
-      safePrint("mois:  $mois");
-      safePrint((temp).runtimeType);
       if (data == null) {
         safePrint('errors: ${response.errors}');
       }
-      return [temp, mois];
     } on ApiException catch (e) {
       safePrint('Query failed: $e');
       return [];

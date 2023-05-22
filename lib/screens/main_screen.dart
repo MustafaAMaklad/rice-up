@@ -1,13 +1,8 @@
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:rice_up/widgets/nav_bar.dart';
 import 'package:rice_up/widgets/palatte.dart';
-// import 'settings_screen.dart';
 import 'data_screens/dashboard_screen.dart';
 import 'model_screens/home_screen.dart';
-import 'dart:convert' as convert;
-
-import 'package:http/http.dart' as http;
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -17,31 +12,16 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen> {
-  String userId = '';
-  final url =
-      'https://pb3crrjdhc.execute-api.us-east-1.amazonaws.com/dev/devices?user_id=ed174e10-7480-46f5-b31e-616d638e260b';
-  int deviceID = 0;
   @override
   void initState() {
     super.initState();
-    // getCurrentUser();
-    // getDeviceId();
   }
 
   int currentIndex = 0;
   final screens = [
-    HomeScreen(),
-    DashboardScreen(),
+    const HomeScreen(),
+    const DashboardScreen(),
   ];
-  getCurrentUserID() {}
-
-  // Future<void> getCurrentUser() async {
-  //   final user = await Amplify.Auth.getCurrentUser();
-  //   setState(() {
-  //     userId = user.userId;
-  //   });
-  //   debugPrint('userId: $userId');
-  // }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override

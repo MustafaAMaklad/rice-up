@@ -6,7 +6,7 @@ class NoDevices extends StatelessWidget {
 
   void _copyToClipboard(BuildContext context) {
     FlutterClipboard.copy('riceupegypt@hotmail.com').then((value) {
-      final snackBar = SnackBar(
+      const snackBar = SnackBar(
         content: Text('Email copied to clipboard'),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);

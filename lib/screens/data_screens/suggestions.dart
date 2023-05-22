@@ -73,7 +73,7 @@ class SuggestionScreen extends StatelessWidget {
                 child: Text(
                   'Temperature',
                   style: TextStyle(
-                    fontSize: 40.0,
+                    fontSize: 30.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -84,49 +84,39 @@ class SuggestionScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     RichText(
-                      text: TextSpan(
+                      text: const TextSpan(
                         children: [
-                          const TextSpan(
+                          TextSpan(
                             text: 'If you see ',
                             style: TextStyle(
                               fontSize: 18.0,
                               color: Colors.black,
                             ),
                           ),
-                          WidgetSpan(
-                            child: Container(
-                              width: 14,
-                              height: 14,
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                            ),
-                          ),
-                          const TextSpan(
-                            text: ' red ',
+                          TextSpan(
+                            text: ' Very High ',
                             style: TextStyle(
-                              color: Colors.red,
+                              color: veryHigh,
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const TextSpan(
-                            text: 'and',
+                          TextSpan(
+                            text: 'or',
                             style: TextStyle(
                               fontSize: 18.0,
                               color: Colors.black,
                             ),
                           ),
-                          const TextSpan(
+                          TextSpan(
                             text: ' High',
                             style: TextStyle(
-                              color: Colors.red,
+                              color: high,
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const TextSpan(
+                          TextSpan(
                             text: ', then:',
                             style: TextStyle(
                               fontSize: 18.0,
@@ -171,49 +161,39 @@ class SuggestionScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     RichText(
-                      text: TextSpan(
+                      text: const TextSpan(
                         children: [
-                          const TextSpan(
+                          TextSpan(
                             text: 'If you see ',
                             style: TextStyle(
                               fontSize: 18.0,
                               color: Colors.black,
                             ),
                           ),
-                          WidgetSpan(
-                            child: Container(
-                              width: 14,
-                              height: 14,
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                            ),
-                          ),
-                          const TextSpan(
-                            text: ' red ',
+                          TextSpan(
+                            text: ' Very Low ',
                             style: TextStyle(
-                              color: Colors.red,
+                              color: veryLow,
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const TextSpan(
-                            text: 'and',
+                          TextSpan(
+                            text: 'or',
                             style: TextStyle(
                               fontSize: 18.0,
                               color: Colors.black,
                             ),
                           ),
-                          const TextSpan(
+                          TextSpan(
                             text: ' Low',
                             style: TextStyle(
-                              color: Colors.red,
+                              color: low,
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const TextSpan(
+                          TextSpan(
                             text: ', then:',
                             style: TextStyle(
                               fontSize: 18.0,
@@ -258,49 +238,24 @@ class SuggestionScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     RichText(
-                      text: TextSpan(
+                      text: const TextSpan(
                         children: [
-                          const TextSpan(
+                          TextSpan(
                             text: 'If you see ',
                             style: TextStyle(
                               fontSize: 18.0,
                               color: Colors.black,
                             ),
                           ),
-                          WidgetSpan(
-                            child: Container(
-                              width: 14,
-                              height: 14,
-                              decoration: BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                            ),
-                          ),
-                          const TextSpan(
-                            text: ' green ',
-                            style: TextStyle(
-                              color: Colors.green,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const TextSpan(
-                            text: 'and',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const TextSpan(
+                          TextSpan(
                             text: ' Good',
                             style: TextStyle(
-                              color: Colors.green,
+                              color: normal,
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const TextSpan(
+                          TextSpan(
                             text: ', then:',
                             style: TextStyle(
                               fontSize: 18.0,
@@ -347,7 +302,7 @@ class SuggestionScreen extends StatelessWidget {
                 child: Text(
                   'Moisture',
                   style: TextStyle(
-                    fontSize: 40.0,
+                    fontSize: 30.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -358,49 +313,39 @@ class SuggestionScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     RichText(
-                      text: TextSpan(
+                      text: const TextSpan(
                         children: [
-                          const TextSpan(
+                          TextSpan(
                             text: 'If you see ',
                             style: TextStyle(
                               fontSize: 18.0,
                               color: Colors.black,
                             ),
                           ),
-                          WidgetSpan(
-                            child: Container(
-                              width: 14,
-                              height: 14,
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                            ),
-                          ),
-                          const TextSpan(
-                            text: ' red ',
+                          TextSpan(
+                            text: ' Very High ',
                             style: TextStyle(
-                              color: Colors.red,
+                              color: veryHigh,
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const TextSpan(
-                            text: 'and',
+                          TextSpan(
+                            text: 'or',
                             style: TextStyle(
                               fontSize: 18.0,
                               color: Colors.black,
                             ),
                           ),
-                          const TextSpan(
+                          TextSpan(
                             text: ' High',
                             style: TextStyle(
-                              color: Colors.red,
+                              color: high,
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const TextSpan(
+                          TextSpan(
                             text: ', then:',
                             style: TextStyle(
                               fontSize: 18.0,
@@ -445,49 +390,39 @@ class SuggestionScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     RichText(
-                      text: TextSpan(
+                      text: const TextSpan(
                         children: [
-                          const TextSpan(
+                          TextSpan(
                             text: 'If you see ',
                             style: TextStyle(
                               fontSize: 18.0,
                               color: Colors.black,
                             ),
                           ),
-                          WidgetSpan(
-                            child: Container(
-                              width: 14,
-                              height: 14,
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                            ),
-                          ),
-                          const TextSpan(
-                            text: ' red ',
+                          TextSpan(
+                            text: ' Very Low ',
                             style: TextStyle(
-                              color: Colors.red,
+                              color: veryLow,
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const TextSpan(
-                            text: 'and',
+                          TextSpan(
+                            text: 'or',
                             style: TextStyle(
                               fontSize: 18.0,
                               color: Colors.black,
                             ),
                           ),
-                          const TextSpan(
+                          TextSpan(
                             text: ' Low',
                             style: TextStyle(
-                              color: Colors.red,
+                              color: low,
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const TextSpan(
+                          TextSpan(
                             text: ', then:',
                             style: TextStyle(
                               fontSize: 18.0,
@@ -532,49 +467,24 @@ class SuggestionScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     RichText(
-                      text: TextSpan(
+                      text: const TextSpan(
                         children: [
-                          const TextSpan(
+                          TextSpan(
                             text: 'If you see ',
                             style: TextStyle(
                               fontSize: 18.0,
                               color: Colors.black,
                             ),
                           ),
-                          WidgetSpan(
-                            child: Container(
-                              width: 14,
-                              height: 14,
-                              decoration: BoxDecoration(
-                                color: Colors.green,
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                            ),
-                          ),
-                          const TextSpan(
-                            text: ' green ',
-                            style: TextStyle(
-                              color: Colors.green,
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const TextSpan(
-                            text: 'and',
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const TextSpan(
+                          TextSpan(
                             text: ' Good',
                             style: TextStyle(
-                              color: Colors.green,
+                              color: normal,
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const TextSpan(
+                          TextSpan(
                             text: ', then:',
                             style: TextStyle(
                               fontSize: 18.0,
