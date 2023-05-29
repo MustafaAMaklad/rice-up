@@ -24,7 +24,7 @@ The second Function is a Computer Vision model restricted to the data science li
 ![Screenshot 2023-05-29 234244](https://github.com/MohamedWaelAlsayed/rice-up/assets/62488272/d5540a5d-cb2a-49f6-b889-a567ace36654)
 
 
-![Screenshot 2023-05-29 234315](https://github.com/MohamedWaelAlsayed/rice-up/assets/62488272/00818e88-57d8-42e5-b887-cb7d5dea8d28)
+![image](https://github.com/MohamedWaelAlsayed/rice-up/assets/62488272/0ba81342-e95b-4bc7-97fe-733b16f9a295)
 
 ## Deployment of Machine learning Model
 ![WhatsApp Image 2023-05-30 at 00 42 16](https://github.com/MohamedWaelAlsayed/rice-up/assets/62488272/d3f72f86-49f6-42a2-af99-166956ee6b6e)
