@@ -14,11 +14,11 @@ Rice diseases are various and threaten the economy and there are 2 most common d
 
 
 
-## ➤The first function is about using ESP32 Node MCU with Two sensors moisture and temperature, Start taking readings from the farm, validating, saving them into DynamoDB provisioned with autoscaling and no latency, and sending them to Mobile Application in Real-Time to Monitor readings change over time (monitor factors that may increase diseases) and Show Summary statistics like min, max, and average with readings to handle if there was an outlier reading and provide suggestions and alerts. All statistics are made on OpenSearchService means all computations are made efficiently on the server, not on the client side. We used GraphQl and Restful APIs. Each user monitors his own devices only.
+The first function is about using ESP32 Node MCU with Two sensors moisture and temperature, Start taking readings from the farm, validating, saving them into DynamoDB provisioned with autoscaling and no latency, and sending them to Mobile Application in Real-Time to Monitor readings change over time (monitor factors that may increase diseases) and Show Summary statistics like min, max, and average with readings to handle if there was an outlier reading and provide suggestions and alerts. All statistics are made on OpenSearchService means all computations are made efficiently on the server, not on the client side. We used GraphQl and Restful APIs. Each user monitors his own devices only.
 
 
 
-## ➤The second Function is a Computer Vision model restricted to the data science lifecycle is used to build an Image Classification model that is able to early detect if the image of rice is diagnosed or not this model is built using ResNet with a High accuracy of the above 97%
+The second Function is a Computer Vision model restricted to the data science lifecycle is used to build an Image Classification model that is able to early detect if the image of rice is diagnosed or not this model is built using ResNet with a High accuracy of the above 97%
 
 ![Screenshot 2023-05-29 234244](https://github.com/MohamedWaelAlsayed/rice-up/assets/62488272/d5540a5d-cb2a-49f6-b889-a567ace36654)
 
