@@ -1,6 +1,5 @@
-# rice_up
 
-## ➤Graduation project is: Rice UP
+## ➤Graduation project: Rice UP
 
 Rice diseases are various and threaten the economy and there are 2 most common diseases in Egypt Brown and Blast these 2 diseases are very similar and cannot differentiate between them in their early stages, So the goal of our application is early detection of these diseases to avoid damages and help user to take an accurate and reliable Decision to improve Rice Quality as possible as.
 
